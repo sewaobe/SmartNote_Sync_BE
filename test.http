@@ -157,7 +157,7 @@ Content-Type: application/json
 
 {
   "lecture_id": "{{lectureId}}",
-  "transcript_id": "{{transcriptId}}",
+  "transcript_id": "{{transcriptId}}"
 }
 
 

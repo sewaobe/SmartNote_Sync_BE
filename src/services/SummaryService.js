@@ -3,6 +3,7 @@ import { GoogleGenAI } from '@google/genai';
 import Summary from '../models/summary.model.js';
 import Note from '../models/note.model.js';
 import Transcript from '../models/transcript.model.js';
+import mongoose from 'mongoose';
 // Init SDK
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY, // SDK mới sẽ tự đọc từ ENV
@@ -51,13 +52,18 @@ export const generateSummary = async (lectureId, transcriptId, userId) => {
   let summaryDoc = null;
 
   try {
-    // 1. Fetch user's notes for personalization
+    // 1. Convert string IDs to ObjectId
+    const lectureObjectId = new mongoose.Types.ObjectId(lectureId);
+    const transcriptObjectId = new mongoose.Types.ObjectId(transcriptId);
+    const userObjectId = userId ? new mongoose.Types.ObjectId(userId) : null;
+
+    // 2. Fetch user's notes for personalization
     let notesContext = '';
-    if (userId) {
+    if (userObjectId) {
       try {
         const userNotes = await Note.find({
-          owner_id: userId,
-          lecture_id: lectureId,
+          owner_id: userObjectId,
+          lecture_id: lectureObjectId,
         }).select('content position');
 
         if (userNotes && userNotes.length > 0) {
@@ -75,22 +81,28 @@ export const generateSummary = async (lectureId, transcriptId, userId) => {
     } else {
       notesContext = 'Không có thông tin học sinh.';
     }
+    
+    const transcript = await Transcript.findById(transcriptObjectId);
 
-    const fullText = await Transcript.findById(transcriptId).then(
-      (t) => t.full_text,
-    );
+    if (!transcript) {
+      throw new Error(`Transcript không tìm thấy: ${transcriptId}`);
+    }
 
-    // 2. Create summary record
+    console.log(transcript)
+
+    const fullText = transcript.full_text;
+
+    // 3. Create summary record
     summaryDoc = await Summary.create({
-      lecture_id: lectureId,
-      transcript_id: transcriptId,
+      lecture_id: lectureObjectId,
+      transcript_id: transcriptObjectId,
       full_text: fullText,
       prompt: SUMMARY_PROMPT,
       status: 'processing',
       model_used: 'gemini-2.5-flash',
     });
 
-    // 3. Replace placeholders in prompt
+    // 4. Replace placeholders in prompt
     let prompt = SUMMARY_PROMPT.replace('{FULL_TEXT}', fullText).replace(
       '{NOTES_CONTEXT}',
       notesContext,
