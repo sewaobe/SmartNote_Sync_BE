@@ -42,10 +42,7 @@ export const getAllNotes = async () => {
 // Get note by ID
 export const getNoteById = async (noteId) => {
   try {
-    const note = await Note.findById(noteId).populate(
-      'owner_id',
-      'name email',
-    );
+    const note = await Note.findById(noteId).populate('owner_id', 'name email');
 
     if (!note) {
       return {
@@ -83,6 +80,31 @@ export const getNotesByOwnerId = async (ownerId) => {
     return {
       success: false,
       message: error.message,
+    };
+  }
+};
+
+export const getNotesByOwnerAndLectureId = async (ownerId, lectureId) => {
+  try {
+    console.log(
+      'NoteService - getNotesByOwnerAndLectureId called with ownerId:',
+      ownerId,
+      'lectureId:',
+      lectureId,
+    );
+    const notes = await Note.find({ owner_id: ownerId, lecture_id: lectureId })
+      .populate('owner_id', 'name email')
+      .sort({ createdAt: -1 });
+
+    return {
+      success: true,
+      data: notes,
+      message: 'Notes retrieved successfully',
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
     };
   }
 };

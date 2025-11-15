@@ -7,18 +7,21 @@ import {
   updateNote as updateNoteService,
   deleteNote as deleteNoteService,
   searchNotes as searchNotesService,
+  getNotesByOwnerAndLectureId,
 } from '../services/NoteService.js';
 
 // Create a new note
 export const createNote = async (req, res) => {
   try {
-    const { content, owner_id, lecture_id, position } = req.body;
+    const { content, lecture_id, position, created_at, record_id, page_index } =
+      req.body;
+    const { userId } = req;
 
     // Validation
-    if (!content || !owner_id || !lecture_id || !position) {
+    if (!userId || !lecture_id || !position) {
       return res.status(400).json({
         success: false,
-        message: 'Content, owner_id, lecture_id, and position are required',
+        message: 'UserId, lecture_id, and position are required',
       });
     }
 
@@ -32,9 +35,12 @@ export const createNote = async (req, res) => {
 
     const result = await createNoteService({
       content,
-      owner_id,
+      owner_id: userId,
       lecture_id,
       position,
+      created_at,
+      record_id,
+      page_index,
     });
 
     if (!result.success) {
@@ -108,6 +114,21 @@ export const getNotesByOwner = async (req, res) => {
   }
 };
 
+export const getNoteByOwnerIdAndLectureId = async (req, res) => {
+  try {
+    const { userId } = req;
+    const { lectureId } = req.params;
+    console.log('Fetching notes for userID:', userId, 'and lectureId:', lectureId);
+    const result = await getNotesByOwnerAndLectureId(userId, lectureId);
+
+    res.status(200).json(result);
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
 // Update note
 export const updateNote = async (req, res) => {
   try {
