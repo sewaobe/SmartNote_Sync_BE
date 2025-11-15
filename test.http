@@ -4,7 +4,9 @@
 @baseUrl = http://localhost:5000/api
 @classId = 6918298b400b4d7ede47d0bf
 @lectureId = 507f1f77bcf86cd799439012
-@teacherToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTE4Mjk4YjQwMGI0ZDdlZGU0N2QwYmEiLCJ1c2VyVHlwZSI6InRlYWNoZXIiLCJpYXQiOjE3NjMxOTI2MzMsImV4cCI6MTc2Mzc5NzQzM30.5QB-pbPblkxYiu9N1S-0kMgAiPgb0rDlGSMANjEw0SI
+@teacherToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTE4MjhiOGI3NDg5NDBmNTdkMTY1ZmEiLCJ1c2VyVHlwZSI6InRlYWNoZXIiLCJpYXQiOjE3NjMxOTMxNzksImV4cCI6MTc2Mzc5Nzk3OX0.e9UBd3VhqAwWoFn5-0PNBcgz6VL7UaeKtYlV1eRZ6MY
+@studentId = 6918298b400b4d7ede47d0bc
+@noteId = 6918328e81fd453c55de5c3b
 
 # ====================================
 # AUTH ENDPOINTS (JWT)
@@ -87,3 +89,49 @@ GET {{baseUrl}}/lectures/{{lectureId}}
 
 ### 12. Delete Lecture
 DELETE {{baseUrl}}/lectures/{{lectureId}}
+
+
+# ====================================
+# NOTE ENDPOINTS
+# ====================================
+
+### 7. Create Note - HAPPY CASE
+POST {{baseUrl}}/notes
+Content-Type: application/json
+
+{
+  "content": "This is my first note about database design patterns",
+  "owner_id": "{{studentId}}",
+  "lecture_id": "{{lectureId}}",
+  "position": {
+    "x": 150,
+    "y": 200
+  }
+}
+
+
+### 8. Get All Notes
+GET {{baseUrl}}/notes
+
+
+### 9. Get Note by ID
+GET {{baseUrl}}/notes/{{noteId}}
+
+
+### 10. Get Notes by Owner/Student ID
+GET {{baseUrl}}/notes/owner/{{studentId}}
+
+
+### 11. Update Note
+PUT {{baseUrl}}/notes/{{noteId}}
+Content-Type: application/json
+
+{
+  "content": "Updated note - Now with more details about design patterns and best practices"
+}
+
+### 12. Search Notes
+GET {{baseUrl}}/notes/search?query=database
+
+### 13. Delete Note
+DELETE {{baseUrl}}/notes/{{noteId}}
