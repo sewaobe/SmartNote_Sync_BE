@@ -45,8 +45,6 @@ Desktop.ini
 # ========================
 uploads/
 public/uploads/
-*.mp3
-*.wav
 *.m4a
 *.ogg
 
