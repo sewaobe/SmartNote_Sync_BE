@@ -7,7 +7,7 @@ const noteSchema = new mongoose.Schema(
 
     owner_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Student',
       required: true,
     },
   },
