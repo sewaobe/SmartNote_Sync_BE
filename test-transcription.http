@@ -27,3 +27,23 @@ Content-Type: audio/wav
 GET {{baseUrl}}/transcription/lecture/{{lectureId}}
 Authorization: Bearer {{teacherToken}}
 
+
+
+#### TEST ASK AI
+POST {{baseUrl}}/lectures/webhook/question
+Content-Type: application/json
+
+{
+  "lectureId": "69182ad0faf294fc3f48c783",
+  "question": "Với quốc tế đảm bảo vệ trò chơi tốt, học sinh sẽ phát triển sức khỏe dưới sự giúp đỡ của ai"
+}
+
+
+#### TEST ASK webhook 
+POST http://localhost:5678/webhook-test/0be91f5b-a868-4a6b-a8a5-e51f5ca6e1a5
+Content-Type: application/json
+
+{
+  "lectureId": "69182ad0faf294fc3f48c783",
+  "question": "Với quốc tế đảm bảo vệ trò chơi tốt, học sinh sẽ phát triển sức khỏe dưới sự giúp đỡ của ai"
+}

@@ -6,6 +6,7 @@ import {
   getLectureById,
   getLectures,
   getLecturesByClass,
+  callQuestionWebhook,
 } from "../controller/LectureController.js";
 import { verifyToken } from "../middleware/jwt.middleware.js";
 
@@ -35,5 +36,8 @@ router.get("/:id", getLectureById);
 
 // Xóa lecture
 router.delete("/:id", deleteLecture);
+
+// Gọi webhook với câu hỏi
+router.post("/webhook/question", callQuestionWebhook);
 
 export default router;
