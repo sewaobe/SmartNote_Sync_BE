@@ -4,9 +4,9 @@
 @baseUrl = http://localhost:5000/api
 @classId = 6918298b400b4d7ede47d0bf
 @lectureId = 69182ad0faf294fc3f48c783
-@teacherToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTE4Mjk4YjQwMGI0ZDdlZGU0N2QwYmEiLCJ1c2VyVHlwZSI6InRlYWNoZXIiLCJpYXQiOjE3NjMyMDE0NjUsImV4cCI6MTc2MzgwNjI2NX0.THc6_PuUjYt9_HviPqL3JlU4DqD-Xi1CXLHobS2eJXk
+@teacherToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTE4Mjk4YjQwMGI0ZDdlZGU0N2QwYmMiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE3NjMyMDY1NjksImV4cCI6MTc2MzgxMTM2OX0.3rSkUZXYZAMnSyBrbCx051dPG641Ik5NgyWsFoBjDvI
 @studentId = 6918298b400b4d7ede47d0bc
-@noteId = 6918328e81fd453c55de5c3b
+@noteId = 691865f8d51151e951aafd1f
 @transcriptId = 6918386c490b801cdcc56ceb
 @summaryId = 69184ccb7a18c0f3e0e8baf8
 
@@ -19,7 +19,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "teacherA@gv.edu.vn",
+  "email": "studentB@student.edu.vn",
   "password": "123456789"
 }
 
@@ -97,18 +97,21 @@ DELETE {{baseUrl}}/lectures/{{lectureId}}
 # NOTE ENDPOINTS
 # ====================================
 
-### 7. Create Note - HAPPY CASE
+### 7. Create Note - HAPPY CASE (With userId)
 POST {{baseUrl}}/notes
+Authorization: Bearer {{teacherToken}}
 Content-Type: application/json
 
 {
-  "content": "This is my first note about database design patterns",
-  "owner_id": "{{studentId}}",
   "lecture_id": "{{lectureId}}",
   "position": {
     "x": 150,
     "y": 200
-  }
+  },
+  "content": "empty",
+  "created_at": "2025-11-15T10:00:00Z",
+  "record_id": "69185251ad505db4754116dd",
+  "page_index": 1
 }
 
 
@@ -123,6 +126,10 @@ GET {{baseUrl}}/notes/{{noteId}}
 ### 10. Get Notes by Owner/Student ID
 GET {{baseUrl}}/notes/owner/{{studentId}}
 
+
+### 10.5. Get Notes by Owner ID and Lecture ID
+GET {{baseUrl}}/notes/lecture/{{lectureId}}
+Authorization: Bearer {{teacherToken}}
 
 ### 11. Update Note
 PUT {{baseUrl}}/notes/{{noteId}}
@@ -143,7 +150,7 @@ DELETE {{baseUrl}}/notes/{{noteId}}
 # SUMMARY ENDPOINTS (Gemini AI)
 # ====================================
 
-### 14. Generate Summary from Transcript
+### 14. Generate Summary from Transcript (With Personalization - userId from JWT)
 POST {{baseUrl}}/summaries/generate
 Authorization: Bearer {{teacherToken}}
 Content-Type: application/json
