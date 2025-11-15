@@ -21,7 +21,8 @@ const transcriptSchema = new mongoose.Schema(
     // AssemblyAI transcript ID để tra cứu sau
     assembly_ai_id: {
       type: String,
-      default: '',
+      default: null,
+      sparse: true,
       index: true,
     },
 

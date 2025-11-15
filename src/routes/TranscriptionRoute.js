@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import {
+  startTranscription,
   uploadAndTranscribe,
   getTranscriptsByLecture,
 } from '../controller/TranscriptionController.js';
@@ -8,8 +9,11 @@ import {
 const router = express.Router();
 const upload = multer();
 
-// Upload audio và bắt đầu transcription
-router.post('/upload/:lectureId', upload.single('audio'), uploadAndTranscribe);
+// Tạo transcript record trước
+router.post('/start/:lectureId', startTranscription);
+
+// Upload audio file và bắt đầu transcription
+router.post('/upload/:transcriptId', upload.single('audio'), uploadAndTranscribe);
 
 // Lấy tất cả transcripts của một lecture
 router.get('/lecture/:lectureId', getTranscriptsByLecture);

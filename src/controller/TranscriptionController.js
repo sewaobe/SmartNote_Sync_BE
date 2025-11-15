@@ -3,39 +3,67 @@ import FileStorageService from '../services/FileStorageService.js';
 import Lecture from '../models/lecture.model.js';
 
 /**
- * Upload audio file và tạo transcription
- * POST /api/transcription/upload/:lectureId
+ * Tạo transcript record trước khi upload
+ * POST /api/transcription/start/:lectureId
  */
-export const uploadAndTranscribe = async (req, res) => {
+export const startTranscription = async (req, res) => {
   try {
     const { lectureId } = req.params;
-    const { page_index } = req.body;
-
-    if (!req.file) {
-      return res.status(400).json({ message: 'Missing audio file' });
-    }
 
     const lecture = await Lecture.findById(lectureId);
     if (!lecture) {
       return res.status(404).json({ message: 'Lecture not found' });
     }
 
-    const fileKey = await FileStorageService.uploadFile(req.file);
-    const audioUrl = await FileStorageService.getPresignedUrl(fileKey);
-
-    const transcript = await TranscriptionService.transcribeAudio(
-      audioUrl,
+    const transcript = await TranscriptionService.createTranscript(
       lectureId,
-      page_index ? parseInt(page_index) : null,
     );
 
     res.status(201).json({
+      message: 'Transcript created successfully',
+      data: {
+        transcript_id: transcript._id,
+        status: transcript.status,
+        lecture_id: lectureId,
+      },
+    });
+  } catch (error) {
+    console.error('Error in startTranscription:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/**
+ * Upload audio file và update transcription
+ * POST /api/transcription/upload/:transcriptId
+ */
+export const uploadAndTranscribe = async (req, res) => {
+  try {
+    const { transcriptId } = req.params;
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Missing audio file' });
+    }
+
+    const fileKey = await FileStorageService.uploadFile(req.file);
+    const audioUrl = await FileStorageService.getPresignedUrl(fileKey);
+
+    const transcript = await TranscriptionService.uploadAndStartTranscription(
+      transcriptId,
+      audioUrl,
+    );
+
+    if (!transcript) {
+      return res.status(404).json({ message: 'Transcript not found' });
+    }
+
+    res.status(200).json({
       message: 'Audio uploaded and transcription started',
       data: {
         transcript_id: transcript._id,
         status: transcript.status,
         audio_url: audioUrl,
-        lecture_id: lectureId,
+        lecture_id: transcript.lecture_id,
       },
     });
   } catch (error) {

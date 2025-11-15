@@ -9,7 +9,70 @@ class TranscriptionService {
   }
 
   /**
-   * Upload audio file và bắt đầu transcription
+   * Tạo transcript record trước khi upload
+   * @param {string} lectureId - ID của lecture
+   * @param {number} pageIndex - Index của trang PDF (optional)
+   * @returns {Promise<Object>} Transcript document
+   */
+  async createTranscript(lectureId, pageIndex = null) {
+    try {
+      const transcriptDoc = await Transcript.create({
+        lecture_id: lectureId,
+        audio_url: '',
+        assembly_ai_id: '',
+        full_text: '',
+        sentences: [],
+        status: 'queued',
+      });
+
+      return transcriptDoc;
+    } catch (error) {
+      console.error('Error creating transcript:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Upload audio và bắt đầu transcription cho transcript đã tạo
+   * @param {string} transcriptId - ID của transcript
+   * @param {string} audioUrl - URL của audio file (từ MinIO/S3)
+   * @returns {Promise<Object>} Updated transcript document
+   */
+  async uploadAndStartTranscription(transcriptId, audioUrl) {
+    try {
+      const transcriptDoc = await Transcript.findById(transcriptId);
+      if (!transcriptDoc) {
+        throw new Error('Transcript not found');
+      }
+
+      // Submit transcription request tới AssemblyAI
+      const params = {
+        audio: audioUrl,
+        language_code: 'vi', // Vietnamese
+        // Có thể enable speaker diarization nếu cần
+        // speaker_labels: true,
+      };
+
+      const transcript = await this.client.transcripts.submit(params);
+
+      // Update transcript record với audio URL và AssemblyAI ID
+      transcriptDoc.audio_url = audioUrl;
+      transcriptDoc.assembly_ai_id = transcript.id;
+      transcriptDoc.status = 'processing';
+      await transcriptDoc.save();
+
+      // Bắt đầu polling để lấy kết quả
+      this.pollTranscript(transcript.id, transcriptDoc._id);
+
+      return transcriptDoc;
+    } catch (error) {
+      console.error('Error uploading and starting transcription:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Upload audio file và bắt đầu transcription (legacy - giữ lại để backward compatible)
    * @param {string} audioUrl - URL của audio file (từ MinIO/S3)
    * @param {string} lectureId - ID của lecture
    * @param {number} pageIndex - Index của trang PDF (optional)
