@@ -1,13 +1,13 @@
-import { Client as MinioClient } from "minio";
+import { S3Client } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
 dotenv.config();
-console.log("MINIO ENDPOINT =", process.env.MINIO_ENDPOINT);
-export const minioClient = new MinioClient({
-  endPoint: process.env.MINIO_ENDPOINT || "localhost",
-  port: parseInt(process.env.MINIO_PORT) || 9000,
-  accessKey: process.env.MINIO_ACCESS_KEY,
-  secretKey: process.env.MINIO_SECRET_KEY,
+
+export const s3Client = new S3Client({
+  region: process.env.AWS_REGION || "us-east-1",
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 });
 
-// Public base URL
-export const MINIO_BASE_URL = process.env.MINIO_BASE_URL;
+export const AWS_BUCKET = process.env.AWS_BUCKET || "smartnote-sync";

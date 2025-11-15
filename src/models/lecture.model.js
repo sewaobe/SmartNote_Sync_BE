@@ -1,5 +1,4 @@
-// models/lecture.model.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const lectureSchema = new mongoose.Schema(
   {
@@ -34,4 +33,4 @@ const lectureSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model('Lecture', lectureSchema);
+export default mongoose.model('Lecture', lectureSchema);

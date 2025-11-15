@@ -1,5 +1,4 @@
-// models/class.model.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const classSchema = new mongoose.Schema(
   {
@@ -7,14 +6,14 @@ const classSchema = new mongoose.Schema(
 
     teacher_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Teacher',
       required: true,
     },
 
     student_ids: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Student',
       },
     ],
 
@@ -24,10 +23,17 @@ const classSchema = new mongoose.Schema(
         ref: 'Lecture',
       },
     ],
+
+    file_ids: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ClassFile',
+      },
+    ],
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   },
 );
 
-module.exports = mongoose.model('Class', classSchema);
+export default mongoose.model('Class', classSchema);

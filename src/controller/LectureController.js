@@ -1,24 +1,35 @@
-import Lecture from "../models/Lecture.js";
+import Lecture from "../models/lecture.model.js";
 import FileStorageService from "../services/FileStorageService.js";
 
 export const createLecture = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { classId } = req.params;
+    const { title } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ message: "Missing PDF file" });
     }
 
-    // Upload PDF lên MinIO
-    const pdfUrl = await FileStorageService.uploadFile(req.file);
+    if (!title) {
+      return res.status(400).json({ message: "Missing title" });
+    }
+
+    if (!classId) {
+      return res.status(400).json({ message: "Missing classId" });
+    }
+
+    // Upload PDF to S3
+    const pdf_url = await FileStorageService.uploadFile(req.file);
 
     const lecture = await Lecture.create({
-      name,
-      pdfUrl,
+      class_id: classId,
+      title,
+      pdf_url,
+      total_page: 1, // Default, có thể update sau
     });
 
     res.status(201).json({
-      message: "Lecture created",
+      message: "Lecture created successfully",
       data: lecture,
     });
   } catch (err) {
@@ -29,7 +40,7 @@ export const createLecture = async (req, res) => {
 
 export const getLectures = async (req, res) => {
   try {
-    const list = await Lecture.find().sort({ createdAt: -1 });
+    const list = await Lecture.find().sort({ created_at: -1 });
     res.json(list);
   } catch (err) {
     res.status(500).json({ message: "Server error" });

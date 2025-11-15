@@ -1,0 +1,58 @@
+### SmartNote Sync Backend - Happy Case Testing
+### Use VS Code REST Client extension to test these endpoints
+
+@baseUrl = http://localhost:5000/api
+@classId = 691829d56b236e295ecc9a1e
+@lectureId = 507f1f77bcf86cd799439012
+
+
+# ====================================
+# FILE UPLOAD ENDPOINTS
+# ====================================
+
+### 1. Upload General File
+POST {{baseUrl}}/files/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="Profile.pdf"
+Content-Type: application/pdf
+
+< ./Profile.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
+### 2. Get Presigned URL for Download
+GET {{baseUrl}}/files/presigned/67564a1234567890abcdef01_Profile.pdf
+
+
+# ====================================
+# LECTURE ENDPOINTS
+# ====================================
+
+### 3. Create Lecture (Teacher uploads PDF for class) - HAPPY CASE
+POST {{baseUrl}}/lectures/create/{{classId}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="title"
+
+Lecture 1 - Introduction to Backend 222
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="lecture1.pdf"
+Content-Type: application/pdf
+
+< ./Profile.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
+### 4. Get All Lectures
+GET {{baseUrl}}/lectures
+
+
+### 5. Get Lecture by ID
+GET {{baseUrl}}/lectures/{{lectureId}}
+
+
+### 6. Delete Lecture
+DELETE {{baseUrl}}/lectures/{{lectureId}}

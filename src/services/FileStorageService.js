@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 import mime from "mime-types";
-import { minioClient } from "../config/minio.config.js";
-
-const BUCKET = "smartnote-sync";
+import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { s3Client, AWS_BUCKET } from "../config/minio.config.js";
 
 class FileStorageService {
   async uploadFile(file) {
@@ -10,15 +10,17 @@ class FileStorageService {
       const fileName = `${uuidv4()}_${file.originalname}`;
       const objectName = fileName;
 
-      await minioClient.putObject(BUCKET, objectName, file.buffer, file.size, {
-        "Content-Type": file.mimetype,
-      });
+      await s3Client.send(new PutObjectCommand({
+        Bucket: AWS_BUCKET,
+        Key: objectName,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      }));
 
-      const publicUrl = `${MINIO_BASE_URL}/${BUCKET}/${objectName}`;
-      return publicUrl;
+      return objectName;
     } catch (err) {
       console.error("Error uploading file:", err);
-      throw new Error("Error uploading file to MinIO");
+      throw new Error("Error uploading file to S3");
     }
   }
 
@@ -29,19 +31,25 @@ class FileStorageService {
 
       const contentType = mime.lookup(fileName) || "application/octet-stream";
 
-      await minioClient.putObject(BUCKET, objectName, inputStream, undefined, {
-        "Content-Type": contentType,
-      });
+      await s3Client.send(new PutObjectCommand({
+        Bucket: AWS_BUCKET,
+        Key: objectName,
+        Body: inputStream,
+        ContentType: contentType,
+      }));
 
       return objectName;
     } catch (err) {
-      throw new Error("Error uploading stream to MinIO");
+      throw new Error("Error uploading stream to S3");
     }
   }
 
   async downloadFile(objectName) {
     try {
-      return await minioClient.getObject(BUCKET, objectName);
+      return await s3Client.send(new GetObjectCommand({
+        Bucket: AWS_BUCKET,
+        Key: objectName,
+      }));
     } catch (err) {
       throw new Error("Error downloading file");
     }
@@ -49,7 +57,10 @@ class FileStorageService {
 
   async deleteFile(objectName) {
     try {
-      await minioClient.removeObject(BUCKET, objectName);
+      await s3Client.send(new DeleteObjectCommand({
+        Bucket: AWS_BUCKET,
+        Key: objectName,
+      }));
     } catch (err) {
       throw new Error("Error deleting file");
     }
@@ -57,12 +68,10 @@ class FileStorageService {
 
   async getPresignedUrl(objectName) {
     try {
-      return await minioClient.presignedUrl(
-        "GET",
-        BUCKET,
-        objectName,
-        60 * 60 * 24 * 7
-      );
+      return await getSignedUrl(s3Client, new GetObjectCommand({
+        Bucket: AWS_BUCKET,
+        Key: objectName,
+      }), { expiresIn: 60 * 60 * 24 * 7 });
     } catch (err) {
       console.error("Error generating presigned URL:", err);
       return null;

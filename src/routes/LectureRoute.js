@@ -21,11 +21,12 @@ const upload = multer({
 // Lấy tất cả lecture
 router.get("/", getLectures);
 
-// Lấy 1 lecture
-router.get("/:id", getLectureById);
+// Tạo lecture mới (có upload PDF) - classId từ URL
+// PHẢI ĐẶT TRƯỚC route /:id để tránh conflict
+router.post("/create/:classId", upload.single("file"), createLecture);
 
-// Tạo lecture mới (có upload PDF)
-router.post("/", upload.single("file"), createLecture);
+// Lấy 1 lecture (PHẢI SAU create route)
+router.get("/:id", getLectureById);
 
 // Xóa lecture
 router.delete("/:id", deleteLecture);
