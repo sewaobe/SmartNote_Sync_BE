@@ -1,5 +1,5 @@
 // models/record.model.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const recordSchema = new mongoose.Schema(
   {
@@ -22,4 +22,4 @@ const recordSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model('Record', recordSchema);
+export default mongoose.model('Record', recordSchema);

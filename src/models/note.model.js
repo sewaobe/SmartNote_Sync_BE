@@ -1,5 +1,5 @@
 // models/note.model.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const noteSchema = new mongoose.Schema(
   {
@@ -10,10 +10,21 @@ const noteSchema = new mongoose.Schema(
       ref: 'Student',
       required: true,
     },
+
+    lecture_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Lecture',
+      required: true,
+    },
+
+    position: {
+      x: { type: Number, required: true },
+      y: { type: Number, required: true },
+    },
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   },
 );
 
-module.exports = mongoose.model('Note', noteSchema);
+export default mongoose.model('Note', noteSchema);

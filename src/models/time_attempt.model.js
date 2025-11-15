@@ -1,5 +1,5 @@
 // models/time_attempt.model.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const timeAttemptSchema = new mongoose.Schema(
   {
@@ -20,4 +20,4 @@ const timeAttemptSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model('TimeAttempt', timeAttemptSchema);
+export default mongoose.model('TimeAttempt', timeAttemptSchema);
