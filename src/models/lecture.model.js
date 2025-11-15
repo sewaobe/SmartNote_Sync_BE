@@ -27,6 +27,13 @@ const lectureSchema = new mongoose.Schema(
         ref: 'TimeAttempt',
       },
     ],
+
+    note_ids: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Note',
+      },
+    ],
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
