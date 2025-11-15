@@ -114,9 +114,8 @@ class TranscriptionService {
    * @returns {Promise<Array>} Array of transcript documents
    */
   async getTranscriptsByLecture(lectureId) {
-    return await Transcript.find({ lecture_id: lectureId }).sort({
-      created_at: -1,
-    });
+    return await Transcript.find({ lecture_id: lectureId })
+      .sort({ created_at: -1 });
   }
 }
 

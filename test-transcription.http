@@ -4,6 +4,7 @@
 
 ### 1. Upload Audio and Start Transcription
 # Upload audio file và bắt đầu transcription process
+# Có thể upload nhiều lần cho cùng một lecture (dạy lại nhiều lần)
 POST {{baseUrl}}/transcription/upload/{{lectureId}}
 Authorization: Bearer {{teacherToken}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -21,7 +22,8 @@ Content-Type: audio/wav
 
 
 ### 2. Get All Transcripts of a Lecture
-# Lấy tất cả transcripts của một lecture (sorted by created_at desc)
+# Lấy tất cả transcripts của một lecture (tất cả các lần dạy)
+# Kết quả sẽ sorted by created_at desc (mới nhất trước)
 GET {{baseUrl}}/transcription/lecture/{{lectureId}}
 Authorization: Bearer {{teacherToken}}
 

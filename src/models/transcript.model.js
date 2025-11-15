@@ -21,14 +21,14 @@ const transcriptSchema = new mongoose.Schema(
     // AssemblyAI transcript ID để tra cứu sau
     assembly_ai_id: {
       type: String,
-      required: true,
+      default: '',
       index: true,
     },
 
     // Audio file info
     audio_url: {
       type: String,
-      required: true,
+      default: '',
     },
 
     // Full transcript text (sẽ có sau khi transcription complete)

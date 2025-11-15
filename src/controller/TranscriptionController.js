@@ -57,8 +57,7 @@ export const getTranscriptsByLecture = async (req, res) => {
       return res.status(404).json({ message: 'Lecture not found' });
     }
 
-    const transcripts =
-      await TranscriptionService.getTranscriptsByLecture(lectureId);
+    const transcripts = await TranscriptionService.getTranscriptsByLecture(lectureId);
 
     res.json({
       message: 'Success',
