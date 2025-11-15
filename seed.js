@@ -1,8 +1,8 @@
 // seed.js
-const mongoose = require('mongoose');
-const teacherModel = require('./src/models/teacher.model');
-const studentModel = require('./src/models/student.model');
-const classModel = require('./src/models/class.model');
+import mongoose from 'mongoose';
+import teacherModel from './src/models/teacher.model.js';
+import studentModel from './src/models/student.model.js';
+import classModel from './src/models/class.model.js';
 
 async function seed() {
   try {

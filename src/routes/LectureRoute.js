@@ -5,7 +5,9 @@ import {
   deleteLecture,
   getLectureById,
   getLectures,
+  getLecturesByClass,
 } from "../controller/LectureController.js";
+import { verifyToken } from "../middleware/jwt.middleware.js";
 
 const router = express.Router();
 
@@ -18,8 +20,11 @@ const upload = multer({
 // ROUTES
 // ------------------------------
 
-// Lấy tất cả lecture
+// Lấy tất cả lecture (không cần auth)
 router.get("/", getLectures);
+
+// Lấy lectures của 1 class (cần JWT auth + authorization)
+router.get("/class/:classId", verifyToken, getLecturesByClass);
 
 // Tạo lecture mới (có upload PDF) - classId từ URL
 // PHẢI ĐẶT TRƯỚC route /:id để tránh conflict

@@ -2,15 +2,50 @@
 ### Use VS Code REST Client extension to test these endpoints
 
 @baseUrl = http://localhost:5000/api
-@classId = 691829d56b236e295ecc9a1e
+@classId = 6918298b400b4d7ede47d0bf
 @lectureId = 507f1f77bcf86cd799439012
+@teacherToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTE4Mjk4YjQwMGI0ZDdlZGU0N2QwYmEiLCJ1c2VyVHlwZSI6InRlYWNoZXIiLCJpYXQiOjE3NjMxOTI2MzMsImV4cCI6MTc2Mzc5NzQzM30.5QB-pbPblkxYiu9N1S-0kMgAiPgb0rDlGSMANjEw0SI
 
+# ====================================
+# AUTH ENDPOINTS (JWT)
+# ====================================
+
+### 1. Login as Teacher
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "teacherA@gv.edu.vn",
+  "password": "123456789"
+}
+
+### 2. Get Current User (Requires JWT Token)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{teacherToken}}
+
+
+# ====================================
+# LECTURE ENDPOINTS WITH JWT AUTH
+# ====================================
+
+### 3. Get Lectures by Class (JWT Required + Authorization Check)
+GET {{baseUrl}}/lectures/class/{{classId}}
+Authorization: Bearer {{teacherToken}}
+
+
+### 4. Get Classes (JWT Required)
+GET {{baseUrl}}/classes
+Authorization: Bearer {{teacherToken}}
+
+### 5. Get Specific Class (JWT Required)
+GET {{baseUrl}}/classes/{{classId}}
+Authorization: Bearer {{teacherToken}}
 
 # ====================================
 # FILE UPLOAD ENDPOINTS
 # ====================================
 
-### 1. Upload General File
+### 8. Upload General File
 POST {{baseUrl}}/files/upload
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
@@ -22,22 +57,22 @@ Content-Type: application/pdf
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 
-### 2. Get Presigned URL for Download
+### 9. Get Presigned URL for Download
 GET {{baseUrl}}/files/presigned/67564a1234567890abcdef01_Profile.pdf
 
 
 # ====================================
-# LECTURE ENDPOINTS
+# LECTURE MANAGEMENT
 # ====================================
 
-### 3. Create Lecture (Teacher uploads PDF for class) - HAPPY CASE
+### 10. Create Lecture (Teacher uploads PDF for class)
 POST {{baseUrl}}/lectures/create/{{classId}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="title"
 
-Lecture 1 - Introduction to Backend 222
+Lecture 1 - Introduction to Backend
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="file"; filename="lecture1.pdf"
 Content-Type: application/pdf
@@ -46,13 +81,9 @@ Content-Type: application/pdf
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 
-### 4. Get All Lectures
-GET {{baseUrl}}/lectures
-
-
-### 5. Get Lecture by ID
+### 11. Get Lecture by ID
 GET {{baseUrl}}/lectures/{{lectureId}}
 
 
-### 6. Delete Lecture
+### 12. Delete Lecture
 DELETE {{baseUrl}}/lectures/{{lectureId}}
