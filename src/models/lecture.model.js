@@ -27,6 +27,12 @@ const lectureSchema = new mongoose.Schema(
         ref: 'Note',
       },
     ],
+
+    // Current page index cho PDF
+    currentPageIndex: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },

@@ -32,6 +32,24 @@ GET {{baseUrl}}/transcription/lecture/{{lectureId}}
 Authorization: Bearer {{teacherToken}}
 
 
+### Bước 4: Update Current Page Index
+# Update vị trí current page index của lecture
+PUT {{baseUrl}}/transcription/{{lectureId}}/currentPageIndex
+Authorization: Bearer {{teacherToken}}
+Content-Type: application/json
+
+{
+  "currentPageIndex": 5
+}
+
+
+### Bước 5: Get Current Page Index
+# Lấy current page index của lecture
+# Return currentPageIndex nếu không có transcript queued, ngược lại return -1
+GET {{baseUrl}}/transcription/{{lectureId}}/currentPageIndex
+Authorization: Bearer {{teacherToken}}
+
+
 
 #### TEST ASK AI
 POST {{baseUrl}}/lectures/webhook/question
