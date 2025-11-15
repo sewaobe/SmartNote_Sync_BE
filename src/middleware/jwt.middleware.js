@@ -18,6 +18,7 @@ export const generateToken = (userId, userType) => {
 export const verifyToken = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log(req.headers);
 
     if (!authHeader) {
       return res.status(401).json({ message: 'Missing authorization header' });

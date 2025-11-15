@@ -7,6 +7,7 @@ import FileRoute from './routes/FileRoute.js';
 import LectureRoute from './routes/LectureRoute.js';
 import TranscriptionRoute from './routes/TranscriptionRoute.js';
 import NoteRoute from './routes/NoteRoute.js';
+import SummaryRoute from './routes/SummaryRoute.js';
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use('/api/files', FileRoute);
 app.use('/api/lectures', LectureRoute);
 app.use('/api/transcription', TranscriptionRoute);
 app.use('/api/notes', NoteRoute);
+app.use('/api/summaries', SummaryRoute);
 
 export default app;

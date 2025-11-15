@@ -3,10 +3,12 @@
 
 @baseUrl = http://localhost:5000/api
 @classId = 6918298b400b4d7ede47d0bf
-@lectureId = 507f1f77bcf86cd799439012
-@teacherToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTE4MjhiOGI3NDg5NDBmNTdkMTY1ZmEiLCJ1c2VyVHlwZSI6InRlYWNoZXIiLCJpYXQiOjE3NjMxOTMxNzksImV4cCI6MTc2Mzc5Nzk3OX0.e9UBd3VhqAwWoFn5-0PNBcgz6VL7UaeKtYlV1eRZ6MY
+@lectureId = 69182ad0faf294fc3f48c783
+@teacherToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTE4Mjk4YjQwMGI0ZDdlZGU0N2QwYmEiLCJ1c2VyVHlwZSI6InRlYWNoZXIiLCJpYXQiOjE3NjMyMDE0NjUsImV4cCI6MTc2MzgwNjI2NX0.THc6_PuUjYt9_HviPqL3JlU4DqD-Xi1CXLHobS2eJXk
 @studentId = 6918298b400b4d7ede47d0bc
 @noteId = 6918328e81fd453c55de5c3b
+@transcriptId = 6918386c490b801cdcc56ceb
+@summaryId = 69184ccb7a18c0f3e0e8baf8
 
 # ====================================
 # AUTH ENDPOINTS (JWT)
@@ -135,3 +137,35 @@ GET {{baseUrl}}/notes/search?query=database
 
 ### 13. Delete Note
 DELETE {{baseUrl}}/notes/{{noteId}}
+
+
+# ====================================
+# SUMMARY ENDPOINTS (Gemini AI)
+# ====================================
+
+### 14. Generate Summary from Transcript
+POST {{baseUrl}}/summaries/generate
+Authorization: Bearer {{teacherToken}}
+Content-Type: application/json
+
+{
+  "lecture_id": "{{lectureId}}",
+  "transcript_id": "{{transcriptId}}",
+  "full_text": "Hôm nay chúng ta sẽ tìm hiểu về Node.js, một runtime JavaScript được xây dựng trên engine V8 của Chrome. Node.js cho phép chúng ta chạy JavaScript phía máy chủ (server-side). Lợi thế của Node.js là nó không chặn (non-blocking), có nghĩa là nó có thể xử lý nhiều yêu cầu cùng một lúc mà không cần chờ. Node.js sử dụng event-driven architecture, điều này làm cho nó rất hiệu quả cho các ứng dụng yêu cầu truyền tải dữ liệu thời gian thực. Package manager npm giúp chúng ta cài đặt các thư viện và framework như Express.js để xây dựng các ứng dụng web. Express.js là một framework phổ biến cho phép chúng ta tạo các API RESTful một cách dễ dàng. Trong khóa học này, chúng ta sẽ học cách tạo các route, middleware, xử lý lỗi và kết nối cơ sở dữ liệu. Chúng ta cũng sẽ học về authentication và authorization để bảo vệ các API của mình. Cuối cùng, chúng ta sẽ học về deployment để đưa ứng dụng của mình lên production."
+}
+
+
+### 15. Get All Summaries
+GET {{baseUrl}}/summaries
+
+
+### 16. Get Summary by Lecture ID
+GET {{baseUrl}}/summaries/lecture/{{lectureId}}
+
+
+### 17. Get Summary by ID
+GET {{baseUrl}}/summaries/{{summaryId}}
+
+
+### 18. Delete Summary
+DELETE {{baseUrl}}/summaries/{{summaryId}}
