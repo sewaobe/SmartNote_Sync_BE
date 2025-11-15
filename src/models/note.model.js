@@ -22,9 +22,9 @@ const noteSchema = new mongoose.Schema(
       y: { type: Number, required: true },
     },
 
-    record_id: {
+    transcript_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Record',
+      ref: 'Transcript',
     },
 
     page_index: { type: Number },

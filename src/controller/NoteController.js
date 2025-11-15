@@ -13,7 +13,7 @@ import {
 // Create a new note
 export const createNote = async (req, res) => {
   try {
-    const { content, lecture_id, position, created_at, record_id, page_index } =
+    const { content, lecture_id, position, created_at, transcript_id, page_index } =
       req.body;
     const { userId } = req;
 
@@ -39,7 +39,7 @@ export const createNote = async (req, res) => {
       lecture_id,
       position,
       created_at,
-      record_id,
+      transcript_id,
       page_index,
     });
 

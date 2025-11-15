@@ -14,17 +14,10 @@ const lectureSchema = new mongoose.Schema(
 
     total_page: { type: Number, required: true },
 
-    record_ids: [
+    transcript_ids: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Record',
-      },
-    ],
-
-    time_attempt_ids: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'TimeAttempt',
+        ref: 'Transcript',
       },
     ],
 
