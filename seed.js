@@ -2,21 +2,24 @@
 const mongoose = require('mongoose');
 const teacherModel = require('./src/models/teacher.model');
 const studentModel = require('./src/models/student.model');
-
-// IMPORT MODELS
+const classModel = require('./src/models/class.model');
 
 async function seed() {
   try {
-    await mongoose.connect('mongodb://localhost:27017/smartnote', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(
+      'mongodb+srv://dminhnhatn_db_user:vQ2lpuqea4DMQxjG@smartnote-sync-cluster.ccxildg.mongodb.net/smart-note-db',
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      },
+    );
 
     console.log('🌱 Connected to MongoDB');
 
     // CLEAR OLD DATA
     await teacherModel.deleteMany({});
     await studentModel.deleteMany({});
+    await classModel.deleteMany({});
 
     console.log('🧹 Old collections cleared');
 
@@ -26,15 +29,37 @@ async function seed() {
       email: 'teacherA@gv.edu.vn',
       password: '123456789',
       avatar_url: 'https://example.com/avatar/teacherA.png',
+      class_ids: [],
     });
 
+    // ---- INSERT STUDENT ----
     const student = await studentModel.create({
       full_name: 'Trần Thị B',
       email: 'studentB@student.edu.vn',
       password: '123456789',
       avatar_url: 'https://example.com/avatar/studentB.png',
       class_ids: [],
+      note_ids: [],
     });
+
+    // ---- INSERT CLASS ----
+    const classDoc = await classModel.create({
+      name: 'Lập Trình Web - Buổi 1',
+      teacher_id: teacher._id,
+      student_ids: [student._id],
+      lecture_ids: [],
+    });
+
+    // Update teacher + student to include this class
+    await teacherModel.findByIdAndUpdate(teacher._id, {
+      $push: { class_ids: classDoc._id },
+    });
+
+    await studentModel.findByIdAndUpdate(student._id, {
+      $push: { class_ids: classDoc._id },
+    });
+
+    console.log('🎓 Class created:', classDoc.name);
 
     console.log('🌟 SEED COMPLETE!');
     process.exit(0);

@@ -7,14 +7,14 @@ const classSchema = new mongoose.Schema(
 
     teacher_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Teacher',
       required: true,
     },
 
     student_ids: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Student',
       },
     ],
 
