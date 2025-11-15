@@ -2,7 +2,7 @@
 import { GoogleGenAI } from '@google/genai';
 import Summary from '../models/summary.model.js';
 import Note from '../models/note.model.js';
-
+import Transcript from '../models/transcript.model.js';
 // Init SDK
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY, // SDK mới sẽ tự đọc từ ENV
@@ -47,7 +47,7 @@ function extractJsonFromText(text) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-export const generateSummary = async (lectureId, transcriptId, fullText, userId) => {
+export const generateSummary = async (lectureId, transcriptId, userId) => {
   let summaryDoc = null;
 
   try {
@@ -63,7 +63,8 @@ export const generateSummary = async (lectureId, transcriptId, fullText, userId)
         if (userNotes && userNotes.length > 0) {
           notesContext = userNotes
             .map(
-              (note) => `• ${note.content} (vị trí: x=${note.position?.x}, y=${note.position?.y})`,
+              (note) =>
+                `• ${note.content} (vị trí: x=${note.position?.x}, y=${note.position?.y})`,
             )
             .join('\n');
         }
@@ -74,6 +75,10 @@ export const generateSummary = async (lectureId, transcriptId, fullText, userId)
     } else {
       notesContext = 'Không có thông tin học sinh.';
     }
+
+    const fullText = await Transcript.findById(transcriptId).then(
+      (t) => t.full_text,
+    );
 
     // 2. Create summary record
     summaryDoc = await Summary.create({

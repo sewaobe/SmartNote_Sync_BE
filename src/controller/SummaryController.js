@@ -9,20 +9,19 @@ import {
 
 export const generateSummary = async (req, res) => {
   try {
-    const { lecture_id, transcript_id, full_text } = req.body;
+    const { lecture_id, transcript_id } = req.body;
     const { userId, userType } = req; // Extract from middleware
 
-    if (!lecture_id || !transcript_id || !full_text) {
+    if (!lecture_id || !transcript_id) {
       return res.status(400).json({
         success: false,
-        message: 'lecture_id, transcript_id, and full_text required',
+        message: 'lecture_id and transcript_id required',
       });
     }
 
     const result = await SummaryServiceGenerate(
       lecture_id,
       transcript_id,
-      full_text,
       userId, // Pass userId to service
     );
 
